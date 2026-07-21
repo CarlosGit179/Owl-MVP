@@ -50,6 +50,7 @@ public class EmprestimoService{
                 .build();
 
         livro.setDisponivel(false);
+        livroRepository.save(livro);
         return emprestimoRepository.save(emprestimo);
     }
 

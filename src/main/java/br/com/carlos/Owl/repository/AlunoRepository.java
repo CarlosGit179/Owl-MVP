@@ -12,7 +12,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
     Aluno findByRa(String ra);
     Aluno findByNome(String nome);
-    Aluno findById(long id);
 
     boolean existsById(long id);
     boolean existsByNome(String nome);
