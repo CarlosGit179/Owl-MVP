@@ -30,20 +30,12 @@ public class AlunoService {
         return alunoRepository.findAll();
     }
 
-    public Aluno buscarPorId(Long id) {
-        return alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
-    }
-
-    public Aluno buscarPorRa(String ra) {
-        return alunoRepository.findByRa(ra);
-    }
-
-    public List<Aluno> buscarPorNome(String nome) {
-        return alunoRepository.findByNomeContainingIgnoreCase(nome);
-    }
-
     public Aluno atualizar (Long id, Aluno alunoAtualizado) {
+
+        if (!alunoRepository.existsById(id)) {
+            throw new RuntimeException("Aluno não encontrado");
+        }
+
         Aluno aluno = buscarPorId(id);
 
         aluno.setNome(alunoAtualizado.getNome());
@@ -60,5 +52,19 @@ public class AlunoService {
 
         alunoRepository.deleteById(id);
     }
+
+    public Aluno buscarPorId(Long id) {
+        return alunoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+    }
+
+    public Aluno buscarPorRa(String ra) {
+        return alunoRepository.findByRa(ra);
+    }
+
+    public List<Aluno> buscarPorNome(String nome) {
+        return alunoRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
 
 }

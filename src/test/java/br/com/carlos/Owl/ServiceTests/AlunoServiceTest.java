@@ -2,6 +2,7 @@ package br.com.carlos.Owl.ServiceTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,8 @@ public class AlunoServiceTest {
         private AlunoService alunoService;
         @Mock
         private AlunoRepository alunoRepository;
+
+        //Testes de sucesso
 
         @Test
         void cadastrarAlunoComSucesso() {
@@ -166,4 +169,46 @@ public class AlunoServiceTest {
 
             verify(alunoRepository).findByNomeContainingIgnoreCase("maria");
         }
+
+        //Textes de exceção
+
+        @Test
+        void cadastrarAlunoNaoEncontrado(){
+
+            Aluno aluno = new Aluno();
+
+            aluno.setId(1L);
+            aluno.setNome("Carlos");
+            aluno.setRa("123456");
+
+            when(alunoRepository.existsByNome("Carlos")).thenReturn(true);
+
+            RuntimeException excecao = assertThrows(RuntimeException.class,
+                                                    () -> alunoService.cadastrar(aluno));
+
+            assertEquals("Nome já cadastrado",
+             excecao.getMessage());
+
+        }
+
+        @Test
+        void cadastrarAlunoRaNaoEncontrada(){
+
+            Aluno aluno = new Aluno();
+
+            aluno.setId(1L);
+            aluno.setNome("Carlos");
+            aluno.setRa("123456");
+
+            when(alunoRepository.existsByNome("Carlos")).thenReturn(false);
+            when(alunoRepository.existsByRa("123456")).thenReturn(true);
+
+            RuntimeException excecao = assertThrows(RuntimeException.class,
+                                                    () -> alunoService.cadastrar(aluno));
+
+            assertEquals("RA já cadastrado",
+             excecao.getMessage());
+
+        }
+
 }

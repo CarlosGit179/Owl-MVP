@@ -3,6 +3,7 @@ package br.com.carlos.Owl.ServiceTests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -287,5 +288,99 @@ public class EmprestimoServiceTest {
     
 
     // Testes Falha
+
+    @Test
+    void livroNaoDisponivelTeste(){
+
+        Emprestimo emprestimo = new Emprestimo();
+        Livro livro = new Livro();
+        Aluno aluno = new Aluno();
+
+        aluno.setId(1L);
+        aluno.setNome("Carlos");
+        aluno.setRa("123456");
+
+        livro.setId(1L);
+        livro.setTitulo("Senhor dos anéis");
+        livro.setIsbn("9780132350884");
+        livro.setDisponivel(false);
+
+        emprestimo.setId(1L);
+        emprestimo.setAluno(aluno);
+        emprestimo.setLivro(livro);
+
+        when(alunoRepository.findById(1L)).thenReturn((Optional.of(aluno)));
+        when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
+
+        RuntimeException excecao = assertThrows(RuntimeException.class,
+                                                    () -> emprestimoService.realizarEmprestimo(1L, 1L));
+
+        
+        assertEquals("Livro não disponível para empréstimo",
+             excecao.getMessage());
+    }
+
+    @Test
+    void alunoJaPosuiEmprestimoEmAndamentoTeste(){
+        
+        Emprestimo emprestimo = new Emprestimo();
+        Livro livro = new Livro();
+        Aluno aluno = new Aluno();
+
+        aluno.setId(1L);
+        aluno.setNome("Carlos");
+        aluno.setRa("123456");
+
+        livro.setId(1L);
+        livro.setTitulo("Senhor dos anéis");
+        livro.setIsbn("9780132350884");
+        livro.setDisponivel(true);
+
+        emprestimo.setId(1L);
+        emprestimo.setAluno(aluno);
+        emprestimo.setLivro(livro);
+        emprestimo.setStatus(StatusEmprestimo.EM_ANDAMENTO);
+
+        when(alunoRepository.findById(1L)).thenReturn((Optional.of(aluno)));
+        when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
+        when(emprestimoRepository.existsByAlunoIdAndStatus(1L, StatusEmprestimo.EM_ANDAMENTO)).thenReturn(true);
+
+        RuntimeException excecao = assertThrows(RuntimeException.class,
+                                                    () -> emprestimoService.realizarEmprestimo(1L, 1L));
+
+
+         assertEquals("Aluno já possui um empréstimo em andamento",
+             excecao.getMessage());
+    }
+
+    @Test
+    void livroJaDevolvidoTeste(){
+
+        Emprestimo emprestimo = new Emprestimo();
+        Aluno aluno = new Aluno();
+        Livro livro = new Livro();
+
+        aluno.setId(1L);
+        aluno.setNome("Carlos");
+        aluno.setRa("1234");
+
+        livro.setId(1L);
+        livro.setTitulo("Senhor dos Anéis");
+        livro.setIsbn("9780261102394");
+        livro.setDisponivel(false);
+
+        emprestimo.setAluno(aluno);
+        emprestimo.setLivro(livro);
+        emprestimo.setStatus(StatusEmprestimo.DEVOLVIDO);
+
+        when(emprestimoRepository.findById(1L))
+                                        .thenReturn(Optional.of(emprestimo));
+
+         RuntimeException excecao = assertThrows(RuntimeException.class,
+                                                    () -> emprestimoService.devolver(1L));
+
+        assertEquals("Empréstimo já foi devolvido",
+             excecao.getMessage());
+    }
 
 }

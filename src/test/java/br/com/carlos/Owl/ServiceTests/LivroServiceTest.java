@@ -184,4 +184,25 @@ public class LivroServiceTest {
         verify(livroRepository).deleteById(1L);
 
     }
+
+    //Teste exceções
+
+    @Test
+        void cadastrarLivroNaoEncontrado(){
+
+            Livro livro = new Livro();
+
+            livro.setId(1L);
+            livro.setTitulo("Senhor dos anéis");
+            livro.setIsbn("9780132350884");
+
+            when(livroRepository.existsByIsbn("9780132350884")).thenReturn(true);
+
+            RuntimeException excecao = assertThrows(RuntimeException.class,
+                                                    () -> livroService.cadastrar(livro));
+
+            assertEquals("ISBN já cadastrado",
+             excecao.getMessage());
+
+        }
 }
