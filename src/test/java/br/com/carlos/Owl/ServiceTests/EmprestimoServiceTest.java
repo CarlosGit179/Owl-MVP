@@ -274,7 +274,7 @@ public class EmprestimoServiceTest {
 
         List<Emprestimo> emprestimos = List.of(emprestimo1, emprestiimo2);
 
-        when(emprestimoRepository.findByStatusEmprestmo(StatusEmprestimo.DEVOLVIDO)).thenReturn(emprestimos);
+        when(emprestimoRepository.findByStatus(StatusEmprestimo.DEVOLVIDO)).thenReturn(emprestimos);
 
         List<Emprestimo> resultado = emprestimoService.buscarPorStatus(StatusEmprestimo.DEVOLVIDO);
 
@@ -282,7 +282,7 @@ public class EmprestimoServiceTest {
         assertEquals(StatusEmprestimo.DEVOLVIDO, resultado.get(0).getStatus());
         assertEquals(StatusEmprestimo.DEVOLVIDO, resultado.get(1).getStatus());
 
-        verify(emprestimoRepository).findByStatusEmprestmo(StatusEmprestimo.DEVOLVIDO);
+        verify(emprestimoRepository).findByStatus(StatusEmprestimo.DEVOLVIDO);
 
     }
     

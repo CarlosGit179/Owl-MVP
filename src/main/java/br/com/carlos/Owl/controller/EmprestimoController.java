@@ -23,9 +23,9 @@ public class EmprestimoController {
     private final EmprestimoService emprestimoService;
 
     @PostMapping
-    public Emprestimo realizaEmprestimo(@RequestParam Long AlunoId,
-                                        @RequestParam Long LivroId){
-        return emprestimoService.realizarEmprestimo(AlunoId, LivroId);
+    public Emprestimo realizaEmprestimo(@RequestParam Long alunoId,
+                                        @RequestParam Long livroId){
+        return emprestimoService.realizarEmprestimo(alunoId, livroId);
                                         }
 
     @PutMapping("/{id}/devolver")
@@ -39,13 +39,13 @@ public class EmprestimoController {
     }
 
     @GetMapping("/{id}")
-    public Emprestimo buscarPorId(@PathVariable Long Id){
-        return emprestimoService.buscarPorId(Id);
+    public Emprestimo buscarPorId(@PathVariable Long id){
+        return emprestimoService.buscarPorId(id);
     }
 
     @GetMapping("/aluno/{alunoId}")
-    public List<Emprestimo> buscarPorAlunoId(@PathVariable Long AlunoId){
-        return emprestimoService.buscarPorAlunoId(AlunoId);
+    public List<Emprestimo> buscarPorAlunoId(@PathVariable Long alunoId){
+        return emprestimoService.buscarPorAlunoId(alunoId);
     }
 
     @GetMapping("/livro/{livroId}")

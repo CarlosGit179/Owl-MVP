@@ -12,9 +12,10 @@ import br.com.carlos.Owl.enums.StatusEmprestimo;
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
     List<Emprestimo> findByAlunoId(Long alunoId);
+
     List<Emprestimo> findByLivroId(Long livroId);
-    List<Emprestimo> findByStatusEmprestmo(StatusEmprestimo status);
+
+    List<Emprestimo> findByStatus(StatusEmprestimo status);
 
     boolean existsByAlunoIdAndStatus(Long alunoId, StatusEmprestimo status);
-
 }

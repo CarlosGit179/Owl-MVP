@@ -89,7 +89,7 @@ public class EmprestimoService{
         return emprestimoRepository.findByLivroId(livroId);
     }
     public List<Emprestimo> buscarPorStatus(StatusEmprestimo status) {
-        return emprestimoRepository.findByStatusEmprestmo(status);
+        return emprestimoRepository.findByStatus(status);
     }
 
 
