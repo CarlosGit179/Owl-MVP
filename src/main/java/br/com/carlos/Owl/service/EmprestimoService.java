@@ -9,6 +9,12 @@ import br.com.carlos.Owl.entity.Aluno;
 import br.com.carlos.Owl.entity.Emprestimo;
 import br.com.carlos.Owl.entity.Livro;
 import br.com.carlos.Owl.enums.StatusEmprestimo;
+import br.com.carlos.Owl.exception.Alunos.AlunoComEmprestimoException;
+import br.com.carlos.Owl.exception.Alunos.AlunoNaoEncontradoException;
+import br.com.carlos.Owl.exception.Emprestimos.EmprestimoDevolvidoException;
+import br.com.carlos.Owl.exception.Emprestimos.EmprestimoNaoEncontradoException;
+import br.com.carlos.Owl.exception.Livros.LivroIndisponivelException;
+import br.com.carlos.Owl.exception.Livros.LivroNaoEncontradoException;
 import br.com.carlos.Owl.repository.AlunoRepository;
 import br.com.carlos.Owl.repository.EmprestimoRepository;
 import br.com.carlos.Owl.repository.LivroRepository;
@@ -42,16 +48,16 @@ public class EmprestimoService{
     public Emprestimo realizarEmprestimo(Long alunoId, Long livroId) {
 
         Aluno aluno = alunoRepository.findById(alunoId)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+                .orElseThrow(() -> new AlunoNaoEncontradoException());
         Livro livro = livroRepository.findById(livroId)
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+                .orElseThrow(() -> new LivroNaoEncontradoException());
 
 
         if (!livro.isDisponivel()) {
-            throw new RuntimeException("Livro não disponível para empréstimo");
+            throw new LivroIndisponivelException();
         }
         if (emprestimoRepository.existsByAlunoIdAndStatus(alunoId, StatusEmprestimo.EM_ANDAMENTO)) {
-            throw new RuntimeException("Aluno já possui um empréstimo em andamento");
+            throw new AlunoComEmprestimoException();
         }
 
 
@@ -79,10 +85,10 @@ public class EmprestimoService{
     @Transactional
     public Emprestimo devolver(Long emprestimoId) {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
-                .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
+                .orElseThrow(() -> new EmprestimoNaoEncontradoException());
 
         if (emprestimo.getStatus() == StatusEmprestimo.DEVOLVIDO) {
-            throw new RuntimeException("Empréstimo já foi devolvido");
+            throw new EmprestimoDevolvidoException();
         }
 
         emprestimo.setDataDevolucao(LocalDate.now());
@@ -113,7 +119,7 @@ public class EmprestimoService{
      */
     public Emprestimo buscarPorId(Long id) {
         return emprestimoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
+                .orElseThrow(() -> new EmprestimoNaoEncontradoException());
     }
     /**
      * Busca empréstimos pelo ID do aluno.

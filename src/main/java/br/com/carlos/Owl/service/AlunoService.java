@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import br.com.carlos.Owl.entity.Aluno;
+import br.com.carlos.Owl.exception.Alunos.AlunoNaoEncontradoException;
+import br.com.carlos.Owl.exception.Alunos.RaJaCadastradoException;
 import br.com.carlos.Owl.repository.AlunoRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -32,11 +34,11 @@ public class AlunoService {
      */
     public Aluno cadastrar (Aluno aluno) {
         if (alunoRepository.existsByNome(aluno.getNome())) {
-            throw new RuntimeException("Nome já cadastrado");
+            throw new AlunoNaoEncontradoException();
         }
 
         if (alunoRepository.existsByRa(aluno.getRa())) {
-            throw new RuntimeException("RA já cadastrado");
+            throw new RaJaCadastradoException();
         }
 
         return alunoRepository.save(aluno);
@@ -62,7 +64,7 @@ public class AlunoService {
     public Aluno atualizar (Long id, Aluno alunoAtualizado) {
 
         if (!alunoRepository.existsById(id)) {
-            throw new RuntimeException("Aluno não encontrado");
+            throw new AlunoNaoEncontradoException();
         }
 
         Aluno aluno = buscarPorId(id);
@@ -82,7 +84,7 @@ public class AlunoService {
     public void excluir(Long id) {
 
         if (!alunoRepository.existsById(id)) {
-            throw new RuntimeException("Aluno não encontrado");
+            throw new AlunoNaoEncontradoException();
         }
 
         alunoRepository.deleteById(id);
@@ -97,7 +99,7 @@ public class AlunoService {
      */
     public Aluno buscarPorId(Long id) {
         return alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+                .orElseThrow(() -> new AlunoNaoEncontradoException());
     }
 
     /**

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import br.com.carlos.Owl.entity.Livro;
+import br.com.carlos.Owl.exception.Livros.IsbnJaCadastradoException;
 import br.com.carlos.Owl.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -28,11 +29,11 @@ public class LivroService {
      *
      * @param livro Livro a ser cadastrado.
      * @return Livro cadastrado.
-     * @throws RuntimeException Caso o ISBN do livro já esteja cadastrado.
+     * @throws IsbnJaCadastradoException Caso o ISBN do livro já esteja cadastrado.
      */
     public Livro cadastrar(Livro livro) {
         if (livroRepository.existsByIsbn(livro.getIsbn())) {
-            throw new RuntimeException("ISBN já cadastrado");
+            throw new IsbnJaCadastradoException();
         }
 
         livro.setDisponivel(true);
@@ -119,4 +120,3 @@ public class LivroService {
         livroRepository.deleteById(id);
     }
 }
-

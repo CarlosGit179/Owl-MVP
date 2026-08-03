@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.carlos.Owl.entity.Aluno;
+import br.com.carlos.Owl.exception.Alunos.RaJaCadastradoException;
 import br.com.carlos.Owl.repository.AlunoRepository;
 import br.com.carlos.Owl.service.AlunoService;
 
@@ -28,7 +29,9 @@ public class AlunoServiceTest {
         @Mock
         private AlunoRepository alunoRepository;
 
-        //Testes de sucesso
+        //=========================
+        // Testes de sucesso
+        //=========================
 
         @Test
         void cadastrarAlunoComSucesso() {
@@ -170,7 +173,9 @@ public class AlunoServiceTest {
             verify(alunoRepository).findByNomeContainingIgnoreCase("maria");
         }
 
-        //Textes de exceção
+        //=========================
+        // Testes de exceção
+        //=========================
 
         @Test
         void cadastrarAlunoNaoEncontrado(){
@@ -181,12 +186,12 @@ public class AlunoServiceTest {
             aluno.setNome("Carlos");
             aluno.setRa("123456");
 
-            when(alunoRepository.existsByNome("Carlos")).thenReturn(true);
+            when(alunoRepository.existsByRa("123456")).thenReturn(true);
 
-            RuntimeException excecao = assertThrows(RuntimeException.class,
+            RaJaCadastradoException excecao = assertThrows(RaJaCadastradoException.class,
                                                     () -> alunoService.cadastrar(aluno));
 
-            assertEquals("Nome já cadastrado",
+            assertEquals("RA já cadastrado",
              excecao.getMessage());
 
         }
