@@ -8,12 +8,28 @@ import br.com.carlos.Owl.entity.Aluno;
 import br.com.carlos.Owl.repository.AlunoRepository;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Serviço responsável pelas regras de negócio relacionadas aos alunos.
+ * <p>
+ * Cadastro, listagem, busca, atualização e exclusão de alunos.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class AlunoService {
 
+    /**
+     * Repositório de alunos.
+     */
     private final AlunoRepository alunoRepository;
 
+    /**
+     * Cadastra um novo aluno.
+     *
+     * @param aluno Aluno a ser cadastrado.
+     * @return Aluno cadastrado.
+     * @throws RuntimeException Caso o nome ou RA do aluno já esteja cadastrado.
+     */
     public Aluno cadastrar (Aluno aluno) {
         if (alunoRepository.existsByNome(aluno.getNome())) {
             throw new RuntimeException("Nome já cadastrado");
@@ -26,10 +42,23 @@ public class AlunoService {
         return alunoRepository.save(aluno);
     }
 
+    /**
+     * Lista todos os alunos.
+     *
+     * @return Lista de alunos.
+     */
     public List<Aluno> listar() {
         return alunoRepository.findAll();
     }
 
+    /**
+     * Atualiza um aluno existente.
+     *
+     * @param id ID do aluno a ser atualizado.
+     * @param alunoAtualizado Aluno com os dados atualizados.
+     * @return Aluno atualizado.
+     * @throws RuntimeException Caso o aluno não seja encontrado.
+     */
     public Aluno atualizar (Long id, Aluno alunoAtualizado) {
 
         if (!alunoRepository.existsById(id)) {
@@ -44,6 +73,12 @@ public class AlunoService {
         return alunoRepository.save(aluno);
     }
 
+    /**
+     * Exclui um aluno existente.
+     *
+     * @param id ID do aluno a ser excluído.
+     * @throws RuntimeException Caso o aluno não seja encontrado.
+     */
     public void excluir(Long id) {
 
         if (!alunoRepository.existsById(id)) {
@@ -53,15 +88,34 @@ public class AlunoService {
         alunoRepository.deleteById(id);
     }
 
+    /**
+     * Busca um aluno pelo seu ID.
+     *
+     * @param id ID do aluno.
+     * @return Aluno encontrado.
+     * @throws RuntimeException Caso o aluno não seja encontrado.
+     */
     public Aluno buscarPorId(Long id) {
         return alunoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
     }
 
+    /**
+     * Busca um aluno pelo seu RA.
+     *
+     * @param ra RA do aluno.
+     * @return Aluno encontrado.
+     */
     public Aluno buscarPorRa(String ra) {
         return alunoRepository.findByRa(ra);
     }
 
+    /**
+     * Busca alunos pelo seu nome.
+     *
+     * @param nome Nome do aluno.
+     * @return Lista de alunos encontrados.
+     */
     public List<Aluno> buscarPorNome(String nome) {
         return alunoRepository.findByNomeContainingIgnoreCase(nome);
     }

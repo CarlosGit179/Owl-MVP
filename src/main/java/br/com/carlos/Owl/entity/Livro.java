@@ -10,6 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidade que representa um livro.
+ * <p>
+ * Contém informações como ID, título, autor, ISBN, editora, ano de publicação, categoria e disponibilidade.
+ * </p>
+ */
 @Entity
 @Table(name = "livros")
 @Getter

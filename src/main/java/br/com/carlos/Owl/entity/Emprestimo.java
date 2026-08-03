@@ -19,6 +19,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidade que representa um empréstimo.
+ * <p>
+ * Contém informações como ID, aluno, livro, datas de empréstimo e devolução, e status do empréstimo.
+ * </p>
+ */
 @Entity
 @Table(name = "emprestimos")
 @Getter

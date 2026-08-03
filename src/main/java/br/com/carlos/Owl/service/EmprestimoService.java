@@ -15,6 +15,12 @@ import br.com.carlos.Owl.repository.LivroRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Serviço responsável pelas regras de negócio relacionadas aos empréstimos.
+ * <p>
+ * Realização de empréstimos, devoluções, listagem e busca de empréstimos.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -24,6 +30,14 @@ public class EmprestimoService{
     private final LivroRepository livroRepository;
     private final AlunoRepository alunoRepository;
 
+    /**
+     * Realiza um empréstimo de um livro para um aluno.
+     *
+     * @param alunoId ID do aluno que realizará o empréstimo.
+     * @param livroId ID do livro a ser emprestado.
+     * @return Empréstimo realizado.
+     * @throws RuntimeException Caso o aluno ou livro não sejam encontrados, caso o livro não esteja disponível ou caso o aluno já possua um empréstimo em andamento.
+     */
     @Transactional
     public Emprestimo realizarEmprestimo(Long alunoId, Long livroId) {
 
@@ -55,6 +69,13 @@ public class EmprestimoService{
     }
 
 
+    /**
+     * Realiza a devolução de um empréstimo.
+     *
+     * @param emprestimoId ID do empréstimo a ser devolvido.
+     * @return Empréstimo devolvido.
+     * @throws RuntimeException Caso o empréstimo não seja encontrado ou caso o empréstimo já tenha sido devolvido.
+     */
     @Transactional
     public Emprestimo devolver(Long emprestimoId) {
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
@@ -75,19 +96,49 @@ public class EmprestimoService{
     }
 
 
+    /**
+     * Lista todos os empréstimos.
+     *
+     * @return Lista de empréstimos.
+     */
     public List<Emprestimo> listar() {
         return emprestimoRepository.findAll();
     }
+    /**
+     * Busca um empréstimo pelo seu ID.
+     *
+     * @param id ID do empréstimo.
+     * @return Empréstimo encontrado.
+     * @throws RuntimeException Caso o empréstimo não seja encontrado.
+     */
     public Emprestimo buscarPorId(Long id) {
         return emprestimoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
     }
+    /**
+     * Busca empréstimos pelo ID do aluno.
+     *
+     * @param alunoId ID do aluno.
+     * @return Lista de empréstimos encontrados.
+     */
     public List<Emprestimo> buscarPorAlunoId(Long alunoId) {
         return emprestimoRepository.findByAlunoId(alunoId);
     }
+    /**
+     * Busca empréstimos pelo ID do livro.
+     *
+     * @param livroId ID do livro.
+     * @return Lista de empréstimos encontrados.
+     */
     public List<Emprestimo> buscarPorLivroId(Long livroId) {
         return emprestimoRepository.findByLivroId(livroId);
     }
+    /**
+     * Busca empréstimos pelo status.
+     *
+     * @param status Status do empréstimo.
+     * @return Lista de empréstimos encontrados.
+     */
     public List<Emprestimo> buscarPorStatus(StatusEmprestimo status) {
         return emprestimoRepository.findByStatus(status);
     }
