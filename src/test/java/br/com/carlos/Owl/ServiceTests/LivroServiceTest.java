@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.carlos.Owl.entity.Livro;
+import br.com.carlos.Owl.exception.Livros.IsbnJaCadastradoException;
 import br.com.carlos.Owl.repository.LivroRepository;
 import br.com.carlos.Owl.service.LivroService;
 
@@ -198,10 +199,10 @@ public class LivroServiceTest {
 
             when(livroRepository.existsByIsbn("9780132350884")).thenReturn(true);
 
-            RuntimeException excecao = assertThrows(RuntimeException.class,
+            IsbnJaCadastradoException excecao = assertThrows(IsbnJaCadastradoException.class,
                                                     () -> livroService.cadastrar(livro));
 
-            assertEquals("ISBN já cadastrado",
+            assertEquals("ISBN já cadastrado.",
              excecao.getMessage());
 
         }

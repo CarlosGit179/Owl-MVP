@@ -40,7 +40,6 @@ public class AlunoServiceTest {
                 aluno.setNome("João da Silva");
                 aluno.setRa("123456");
 
-                when(alunoRepository.existsByRa(aluno.getRa())).thenReturn(false);
                 when(alunoRepository.save(any(Aluno.class))).thenReturn(aluno);
 
                 Aluno resultado = alunoService.cadastrar(aluno);
@@ -191,27 +190,7 @@ public class AlunoServiceTest {
             RaJaCadastradoException excecao = assertThrows(RaJaCadastradoException.class,
                                                     () -> alunoService.cadastrar(aluno));
 
-            assertEquals("RA já cadastrado",
-             excecao.getMessage());
-
-        }
-
-        @Test
-        void cadastrarAlunoRaNaoEncontrada(){
-
-            Aluno aluno = new Aluno();
-
-            aluno.setId(1L);
-            aluno.setNome("Carlos");
-            aluno.setRa("123456");
-
-            when(alunoRepository.existsByNome("Carlos")).thenReturn(false);
-            when(alunoRepository.existsByRa("123456")).thenReturn(true);
-
-            RuntimeException excecao = assertThrows(RuntimeException.class,
-                                                    () -> alunoService.cadastrar(aluno));
-
-            assertEquals("RA já cadastrado",
+            assertEquals("RA já cadastrado.",
              excecao.getMessage());
 
         }

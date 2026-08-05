@@ -22,6 +22,10 @@ import br.com.carlos.Owl.entity.Aluno;
 import br.com.carlos.Owl.entity.Emprestimo;
 import br.com.carlos.Owl.entity.Livro;
 import br.com.carlos.Owl.enums.StatusEmprestimo;
+import br.com.carlos.Owl.exception.Alunos.AlunoComEmprestimoException;
+import br.com.carlos.Owl.exception.Emprestimos.EmprestimoDevolvidoException;
+import br.com.carlos.Owl.exception.Emprestimos.EmprestimoEmAndamentoException;
+import br.com.carlos.Owl.exception.Livros.LivroIndisponivelException;
 import br.com.carlos.Owl.repository.AlunoRepository;
 import br.com.carlos.Owl.repository.EmprestimoRepository;
 import br.com.carlos.Owl.repository.LivroRepository;
@@ -287,7 +291,9 @@ public class EmprestimoServiceTest {
     }
     
 
+    //==============
     // Testes Falha
+    //==============
 
     @Test
     void livroNaoDisponivelTeste(){
@@ -312,11 +318,11 @@ public class EmprestimoServiceTest {
         when(alunoRepository.findById(1L)).thenReturn((Optional.of(aluno)));
         when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
 
-        RuntimeException excecao = assertThrows(RuntimeException.class,
+        LivroIndisponivelException excecao = assertThrows(LivroIndisponivelException.class,
                                                     () -> emprestimoService.realizarEmprestimo(1L, 1L));
 
         
-        assertEquals("Livro não disponível para empréstimo",
+        assertEquals("Livro indisponível para empréstimo.",
              excecao.getMessage());
     }
 
@@ -345,11 +351,11 @@ public class EmprestimoServiceTest {
         when(livroRepository.findById(1L)).thenReturn(Optional.of(livro));
         when(emprestimoRepository.existsByAlunoIdAndStatus(1L, StatusEmprestimo.EM_ANDAMENTO)).thenReturn(true);
 
-        RuntimeException excecao = assertThrows(RuntimeException.class,
+        AlunoComEmprestimoException excecao = assertThrows(AlunoComEmprestimoException.class,
                                                     () -> emprestimoService.realizarEmprestimo(1L, 1L));
 
 
-         assertEquals("Aluno já possui um empréstimo em andamento",
+         assertEquals("Aluno possui empréstimo em andamento.",
              excecao.getMessage());
     }
 
@@ -376,10 +382,10 @@ public class EmprestimoServiceTest {
         when(emprestimoRepository.findById(1L))
                                         .thenReturn(Optional.of(emprestimo));
 
-         RuntimeException excecao = assertThrows(RuntimeException.class,
+         EmprestimoDevolvidoException excecao = assertThrows(EmprestimoDevolvidoException.class,
                                                     () -> emprestimoService.devolver(1L));
 
-        assertEquals("Empréstimo já foi devolvido",
+        assertEquals("Empréstimo já foi devolvido.",
              excecao.getMessage());
     }
 

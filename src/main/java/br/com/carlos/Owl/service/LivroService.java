@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.carlos.Owl.entity.Livro;
 import br.com.carlos.Owl.exception.Livros.IsbnJaCadastradoException;
+import br.com.carlos.Owl.exception.Livros.LivroNaoEncontradoException;
 import br.com.carlos.Owl.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -59,7 +60,7 @@ public class LivroService {
      */
     public Livro buscarPorId(Long id) {
         return livroRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+                .orElseThrow(() -> new LivroNaoEncontradoException());
     }
 
     /**
@@ -71,7 +72,7 @@ public class LivroService {
      */
     public Livro buscarPorIsbn(String isbn) {
         return livroRepository.findByIsbn(isbn)
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+                .orElseThrow(() -> new LivroNaoEncontradoException());
     }
 
     /**
@@ -114,7 +115,7 @@ public class LivroService {
     public void excluir(Long id) {
 
         if (!livroRepository.existsById(id)) {
-            throw new RuntimeException("Livro não encontrado.");
+            throw new LivroNaoEncontradoException();
         }
 
         livroRepository.deleteById(id);

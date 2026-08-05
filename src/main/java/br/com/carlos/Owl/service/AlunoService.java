@@ -33,9 +33,6 @@ public class AlunoService {
      * @throws RuntimeException Caso o nome ou RA do aluno já esteja cadastrado.
      */
     public Aluno cadastrar (Aluno aluno) {
-        if (alunoRepository.existsByNome(aluno.getNome())) {
-            throw new AlunoNaoEncontradoException();
-        }
 
         if (alunoRepository.existsByRa(aluno.getRa())) {
             throw new RaJaCadastradoException();
