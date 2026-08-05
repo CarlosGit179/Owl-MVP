@@ -39,6 +39,7 @@ Ao realizar a devolução, o livro volta a ficar disponível.
 A data do empréstimo é registrada automaticamente.
 A previsão de devolução é definida para um mês após a realização do empréstimo.
 Operações envolvendo registros inexistentes são rejeitadas pela aplicação.
+
 🛠️ Tecnologias
 Java 21
 Spring Boot
@@ -49,23 +50,21 @@ PostgreSQL
 Maven
 JUnit 5
 Mockito
+
 🏗️ Arquitetura
 
 O Owl utiliza uma arquitetura em camadas para separar as responsabilidades da aplicação.
 
 Cliente / Postman
        │
-       ▼
   Controller
        │
-       ▼
     Service
        │
-       ▼
   Repository
        │
-       ▼
   PostgreSQL
+  
 Controller
 
 Responsável por receber as requisições HTTP e disponibilizar os endpoints da API.
@@ -89,12 +88,11 @@ As principais entidades do sistema são:
 Aluno
   │
   │
-  ▼
 Emprestimo
   │
   │
-  ▼
 Livro
+
 Livro
 
 Representa um livro disponível no acervo da biblioteca.
