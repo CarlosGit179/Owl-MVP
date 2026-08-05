@@ -111,28 +111,6 @@ Representa a relação entre um aluno e um livro durante determinado período.
 
 Armazena informações referentes à realização do empréstimo, previsão de devolução e seu status.
 
-📂 Estrutura do projeto
-
-A aplicação está organizada seguindo a separação de responsabilidades:
-
-src/
-├── main/
-│   ├── java/
-│   │   └── ...
-│   │       ├── controller/
-│   │       ├── entity/
-│   │       ├── repository/
-│   │       └── service/
-│   │
-│   └── resources/
-│       └── application.properties
-│
-└── test/
-    └── java/
-        └── ...
-🚀 Como executar
-Pré-requisitos
-
 Para executar o projeto localmente é necessário possuir:
 
 Java 21+
