@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.carlos.Owl.entity.Aluno;
 import br.com.carlos.Owl.service.AlunoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/alunos")
 @RequiredArgsConstructor
+@Tag(name = "Aluno", description = "API para gerenciamento de alunos")
 public class AlunoController {
 
     private final AlunoService alunoService;
@@ -35,6 +38,7 @@ public class AlunoController {
      * @return Aluno cadastrado.
      */
     @PostMapping
+    @Operation(summary = "Cadastrar um novo aluno", description = "Cadastra um novo aluno na biblioteca")
     public Aluno cadastrar(@RequestBody Aluno aluno) {
         return alunoService.cadastrar(aluno);
     }
@@ -47,6 +51,7 @@ public class AlunoController {
      * @return Aluno atualizado.
      */
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar aluno", description = "Atualiza os dados de um aluno existente na biblioteca")
     public Aluno atualizar(@RequestBody Aluno aluno, @PathVariable Long id) {
         aluno.setId(id);
         return alunoService.atualizar(id, aluno);
@@ -58,6 +63,7 @@ public class AlunoController {
      * @param id ID do aluno a ser excluído.
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Excluir aluno", description = "Exclui um aluno existente na biblioteca pelo seu ID")
     public void excluir(@PathVariable Long id) {
         alunoService.excluir(id);
     }
@@ -68,6 +74,7 @@ public class AlunoController {
      * @return Lista de alunos.
      */
     @GetMapping
+    @Operation(summary = "Listar todos os alunos", description = "Retorna uma lista de todos os alunos cadastrados na biblioteca")
     public List<Aluno> listar() {
         return alunoService.listar();
     }
@@ -79,6 +86,7 @@ public class AlunoController {
      * @return Aluno encontrado.
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar aluno por ID", description = "Busca um aluno na biblioteca pelo seu ID")
     public Aluno buscarPorId(@PathVariable Long id) {
         return alunoService.buscarPorId(id);
     }
@@ -90,6 +98,7 @@ public class AlunoController {
      * @return Lista de alunos encontrados.
      */
     @GetMapping("/nome/{nome}")
+    @Operation(summary = "Buscar alunos por nome", description = "Busca alunos na biblioteca pelo seu nome")
     public List<Aluno> buscarPorNome(@PathVariable String nome) {
         return alunoService.buscarPorNome(nome);
     }
@@ -101,6 +110,7 @@ public class AlunoController {
      * @return Aluno encontrado.
      */
     @GetMapping("/ra/{ra}")
+    @Operation(summary = "Buscar aluno por RA", description = "Busca um aluno na biblioteca pelo seu RA")
     public Aluno buscarPorRa(@PathVariable String ra) {
         return alunoService.buscarPorRa(ra);
     }
