@@ -24,7 +24,6 @@ import br.com.carlos.Owl.entity.Livro;
 import br.com.carlos.Owl.enums.StatusEmprestimo;
 import br.com.carlos.Owl.exception.Alunos.AlunoComEmprestimoException;
 import br.com.carlos.Owl.exception.Emprestimos.EmprestimoDevolvidoException;
-import br.com.carlos.Owl.exception.Emprestimos.EmprestimoEmAndamentoException;
 import br.com.carlos.Owl.exception.Livros.LivroIndisponivelException;
 import br.com.carlos.Owl.repository.AlunoRepository;
 import br.com.carlos.Owl.repository.EmprestimoRepository;
