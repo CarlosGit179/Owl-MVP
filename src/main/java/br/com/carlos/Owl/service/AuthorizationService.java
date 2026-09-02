@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.carlos.Owl.repository.UserRepository;
 
+
 @Service
 public class AuthorizationService implements UserDetailsService{
 
@@ -16,7 +17,7 @@ public class AuthorizationService implements UserDetailsService{
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        return userRepository.findByLogin(username);
     }
 
 }

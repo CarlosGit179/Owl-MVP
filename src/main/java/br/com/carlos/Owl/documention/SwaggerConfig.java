@@ -1,4 +1,4 @@
-package br.com.carlos.Owl.config;
+package br.com.carlos.Owl.documention;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
