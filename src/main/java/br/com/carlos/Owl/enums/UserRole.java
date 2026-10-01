@@ -2,8 +2,7 @@ package br.com.carlos.Owl.enums;
 
 public enum UserRole {
 
-    ADMIN("admin"),
-    ALUNO("aluno");
+    ADMIN("admin"), STUDENT("student");
 
     private String role;
 

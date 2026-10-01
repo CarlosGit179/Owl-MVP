@@ -10,5 +10,7 @@ import br.com.carlos.Owl.entity.User;
 public interface UserRepository extends JpaRepository<User, String> {
 
     UserDetails findByLogin(String login);
-    
+
+    boolean existsByStudentRegistrationNumber(String studentRegistrationNumber);
+
 }

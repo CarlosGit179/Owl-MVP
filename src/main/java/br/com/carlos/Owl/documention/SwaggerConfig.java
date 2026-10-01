@@ -11,11 +11,8 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("Owl API")
-                        .version("1.0")
-                        .description("API REST para gerenciamento de biblioteca, livros, alunos e empréstimos."));
+        return new OpenAPI().info(new Info().title("Owl API").version("1.0")
+                .description("REST API for managing the library, books, students, and loans."));
     }
 
 }

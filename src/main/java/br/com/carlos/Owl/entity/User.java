@@ -15,6 +15,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -43,6 +45,19 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRole role;
 
+    @OneToOne
+    @JoinColumn(name = "student_registration_number", unique = true)
+    private Student student;
+
+    // User constructor with Student parameter
+    public User(String login, String password, UserRole role, Student student) {
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.student = student;
+    }
+
+    // User constructor without Student parameter
     public User(String login, String password, UserRole role) {
         this.login = login;
         this.password = password;
@@ -51,8 +66,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if (this.role == UserRole.ADMIN) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        } else {
+            return List.of(new SimpleGrantedAuthority("ROLE_STUDENT"));
+        }
     }
 
     @Override

@@ -1,227 +1,81 @@
-🦉 Owl
+﻿# 🦉 Owl
 
-Sistema de gerenciamento de biblioteca desenvolvido em Java com Spring Boot, voltado para o controle de livros, alunos e empréstimos.
+A library management REST API built with Java and Spring Boot. The MVP supports books, students, and loans, with PostgreSQL persistence and JWT based authentication and authorization.
 
-O projeto foi desenvolvido como um MVP (Minimum Viable Product), priorizando regras de negócio, organização da aplicação, persistência de dados e testes antes da inclusão de recursos adicionais de infraestrutura e segurança.
+## Features
 
-📖 Sobre o projeto
+- Register, find, update, and delete books and students
+- Create, list, and return loans
+- Find loans by student or status, and list the authenticated student's loans
+- Automatically track book availability
 
-O Owl é uma API REST para gerenciamento das operações fundamentais de uma biblioteca.
+## Business rules
 
-O sistema permite cadastrar e consultar livros e alunos, administrar empréstimos e devoluções e controlar automaticamente a disponibilidade dos livros.
+- A book must be available before it can be loaned.
+- A student can have only one active loan at a time.
+- A book becomes unavailable when loaned and available again when returned.
+- Loan dates are recorded automatically; the due date is one month later.
+- Requests involving records that do not exist are rejected.
 
-O projeto utiliza uma arquitetura em camadas, separando responsabilidades entre controllers, services e repositories.
+## Technology
 
-✨ Funcionalidades
-Cadastro de livros
-Consulta de livros
-Atualização de livros
-Exclusão de livros
-Cadastro de alunos
-Consulta de alunos
-Atualização de alunos
-Exclusão de alunos
-Realização de empréstimos
-Devolução de livros
-Consulta de empréstimos
-Consulta de empréstimos por aluno
-Consulta de empréstimos por livro
-Consulta de empréstimos por status
-Controle automático da disponibilidade dos livros
-📋 Regras de negócio
+- Java 21
+- Spring Boot, Spring Web, Spring Data JPA, Spring Security
+- PostgreSQL and Hibernate
+- Maven, JUnit 5, and Mockito
 
-O MVP implementa regras para preservar a consistência das operações de empréstimo.
+## Architecture
 
-Um livro precisa estar disponível para ser emprestado.
-Um aluno pode possuir apenas um empréstimo em andamento por vez.
-Ao realizar um empréstimo, o livro passa automaticamente para indisponível.
-Ao realizar a devolução, o livro volta a ficar disponível.
-A data do empréstimo é registrada automaticamente.
-A previsão de devolução é definida para um mês após a realização do empréstimo.
-Operações envolvendo registros inexistentes são rejeitadas pela aplicação.
+The application uses a layered architecture:
 
-🛠️ Tecnologias
-Java 21
-Spring Boot
-Spring Web
-Spring Data JPA
-Hibernate
-PostgreSQL
-Maven
-JUnit 5
-Mockito
+- **Controllers** receive HTTP requests and expose API endpoints.
+- **Services** implement application logic and business rules.
+- **Repositories** provide persistence through Spring Data JPA.
+- **Entities** represent books, students, loans, and users.
 
-🏗️ Arquitetura
+## Run locally
 
-O Owl utiliza uma arquitetura em camadas para separar as responsabilidades da aplicação.
+Requirements: Java 21+, Maven, and PostgreSQL.
 
-Cliente / Postman
-       │
-  Controller
-       │
-    Service
-       │
-  Repository
-       │
-  PostgreSQL
-  
-Controller
+1. Clone the repository and enter its directory:
 
-Responsável por receber as requisições HTTP e disponibilizar os endpoints da API.
+   ```shell
+   git clone <REPOSITORY-URL>
+   cd Owl
+   ```
 
-Service
+2. Configure the PostgreSQL connection in `src/main/resources/application.properties`.
+3. Start the application:
 
-Responsável pela lógica da aplicação e aplicação das regras de negócio.
+   ```shell
+   mvn spring-boot:run
+   ```
 
-Repository
+The application runs on port `8080` by default. Hibernate creates or updates database structures according to the application configuration.
 
-Responsável pelo acesso e persistência dos dados utilizando Spring Data JPA.
+## API
 
-PostgreSQL
+- `/books`: book registration and search, updates, and deletion
+- `/students`: student registration and search, updates, and deletion
+- `/loans`: loan creation, searches, listing, and returns
+- `/auth`: authentication and registration
 
-Responsável pelo armazenamento persistente dos dados.
+OpenAPI/Swagger documentation is configured by the application.
 
-📦 Modelo de domínio
+## Tests
 
-As principais entidades do sistema são:
+Run the automated test suite with:
 
-Aluno
-  │
-  │
-Emprestimo
-  │
-  │
-Livro
-
-Livro
-
-Representa um livro disponível no acervo da biblioteca.
-
-Entre suas informações estão título, autor, ISBN, editora, ano de publicação, categoria e disponibilidade.
-
-Aluno
-
-Representa o aluno cadastrado no sistema e apto a realizar empréstimos.
-
-Empréstimo
-
-Representa a relação entre um aluno e um livro durante determinado período.
-
-Armazena informações referentes à realização do empréstimo, previsão de devolução e seu status.
-
-Para executar o projeto localmente é necessário possuir:
-
-Java 21+
-Maven
-PostgreSQL
-1. Clone o repositório
-git clone <URL-DO-REPOSITORIO>
-
-Entre na pasta:
-
-cd Owl
-2. Configure o PostgreSQL
-
-Configure as credenciais do banco no arquivo:
-
-src/main/resources/application.properties
-
-Exemplo:
-
-spring.datasource.url=jdbc:postgresql://localhost:5432/owl
-spring.datasource.username=postgres
-spring.datasource.password=SUA_SENHA
-
-O Hibernate é responsável pela criação/atualização das estruturas necessárias no banco durante a execução da aplicação, conforme a configuração do projeto.
-
-3. Execute
-mvn spring-boot:run
-
-Por padrão, a aplicação será iniciada na porta:
-
-8080
-🔗 API
-
-A aplicação disponibiliza endpoints REST para gerenciamento de:
-
-Livros
-
-Operações de cadastro, consulta, atualização e exclusão de livros.
-
-Alunos
-
-Operações de cadastro, consulta, atualização e exclusão de alunos.
-
-Empréstimos
-
-Operações relacionadas à realização, consulta e devolução de empréstimos.
-
-🧪 Testes
-
-O projeto possui testes automatizados para validar o comportamento da camada de serviços e suas principais regras de negócio.
-
-Os testes foram desenvolvidos utilizando:
-
-JUnit 5
-Mockito
-
-São verificados tanto cenários de execução esperada quanto comportamentos relacionados às regras de negócio e tratamento de operações inválidas.
-
-Para executar os testes:
-
+```shell
 mvn test
-🗺️ Roadmap
+```
 
-O desenvolvimento inicial foi concentrado na construção e validação do MVP.
+The tests cover service behavior, business rules, and HTTP controller responses.
 
-Possíveis evoluções incluem:
+## Roadmap
 
-Infraestrutura
+Potential future work includes Docker and CI/CD improvements, expanded API documentation, book reservations, advanced loan history, overdue tracking, fines, and return notifications.
 
-Containerização com Docker
+## Status
 
-Docker Compose para aplicação e PostgreSQL
-
-Pipeline de CI/CD
-
-API e documentação
-
-Swagger / OpenAPI
-
-Documentação detalhada dos endpoints
-
-Tratamento global e padronizado de exceções
-
-Segurança
-
-Spring Security
-
-Autenticação com JWT
-
-Controle de acesso e permissões
-
-Domínio
-
-Reserva de livros
-
-Histórico avançado de empréstimos
-
-Controle de atrasos
-
-Sistema de multas
-
-Notificações de devolução
-
-Arquitetura
-
-Avaliação da evolução do monólito conforme o crescimento da aplicação
-
-Separação de serviços quando houver necessidade arquitetural
-
-📌 Status
-
-MVP concluído.
-
-O núcleo funcional da aplicação — gerenciamento de livros, alunos e empréstimos — encontra-se implementado e testado.
-
-As funcionalidades apresentadas no Roadmap representam possíveis evoluções posteriores e não fazem parte do escopo do MVP atual.
+The MVP's core book, student, and loan management features are implemented. Roadmap items are outside the current MVP scope.
