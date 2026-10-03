@@ -1,227 +1,167 @@
-🦉 Owl
+# 🦉 Owl
 
-Sistema de gerenciamento de biblioteca desenvolvido em Java com Spring Boot, voltado para o controle de livros, alunos e empréstimos.
+Owl is a REST API for library management. It lets administrators manage books, students, and loans, while students can sign in and view their own loans. The application is built with Java and Spring Boot, stores data in PostgreSQL, and uses JWT bearer tokens for authentication.
 
-O projeto foi desenvolvido como um MVP (Minimum Viable Product), priorizando regras de negócio, organização da aplicação, persistência de dados e testes antes da inclusão de recursos adicionais de infraestrutura e segurança.
+## Features
 
-📖 Sobre o projeto
+- Create, list, search, update, and delete books and students
+- Create and return loans, and search loans by student or status
+- Let an authenticated student view their own loans
+- Track whether a book is available for loan
+- Protect endpoints by role: administrators manage library records; students can access their personal loan list
+- Explore the API through generated Swagger UI and OpenAPI documentation
 
-O Owl é uma API REST para gerenciamento das operações fundamentais de uma biblioteca.
+## Business rules
 
-O sistema permite cadastrar e consultar livros e alunos, administrar empréstimos e devoluções e controlar automaticamente a disponibilidade dos livros.
+- Only available books can be loaned.
+- A student can have only one active loan at a time.
+- A book becomes unavailable when loaned and available again when returned.
+- The loan date is set when a loan is created; the due date is one month later.
+- A return request applies to the student's active loan.
+- A student account must be linked to an existing student record.
 
-O projeto utiliza uma arquitetura em camadas, separando responsabilidades entre controllers, services e repositories.
+## Technology
 
-✨ Funcionalidades
-Cadastro de livros
-Consulta de livros
-Atualização de livros
-Exclusão de livros
-Cadastro de alunos
-Consulta de alunos
-Atualização de alunos
-Exclusão de alunos
-Realização de empréstimos
-Devolução de livros
-Consulta de empréstimos
-Consulta de empréstimos por aluno
-Consulta de empréstimos por livro
-Consulta de empréstimos por status
-Controle automático da disponibilidade dos livros
-📋 Regras de negócio
+- Java 21 and Spring Boot 4
+- Spring Web MVC, Spring Data JPA, Spring Security, and Bean Validation
+- PostgreSQL 16 and Hibernate
+- JWT-based authentication with Auth0 Java JWT; BCrypt password hashing
+- Springdoc OpenAPI / Swagger UI
+- Maven, JUnit 5, and Spring Boot test libraries
+- Docker and Docker Compose for containerized local development
 
-O MVP implementa regras para preservar a consistência das operações de empréstimo.
+## Run with Docker Compose
 
-Um livro precisa estar disponível para ser emprestado.
-Um aluno pode possuir apenas um empréstimo em andamento por vez.
-Ao realizar um empréstimo, o livro passa automaticamente para indisponível.
-Ao realizar a devolução, o livro volta a ficar disponível.
-A data do empréstimo é registrada automaticamente.
-A previsão de devolução é definida para um mês após a realização do empréstimo.
-Operações envolvendo registros inexistentes são rejeitadas pela aplicação.
+Requirements: Docker with the Compose plugin.
 
-🛠️ Tecnologias
-Java 21
-Spring Boot
-Spring Web
-Spring Data JPA
-Hibernate
-PostgreSQL
-Maven
-JUnit 5
-Mockito
+The Compose setup starts PostgreSQL and the Owl API. Before starting, create a `.env` file in the project root with administrator credentials:
 
-🏗️ Arquitetura
+```dotenv
+APP_ADMIN_LOGIN=admin
+ADMIN_PASSWORD=change-this-password
+```
 
-O Owl utiliza uma arquitetura em camadas para separar as responsabilidades da aplicação.
+Start both services:
 
-Cliente / Postman
-       │
-  Controller
-       │
-    Service
-       │
-  Repository
-       │
-  PostgreSQL
-  
-Controller
+```shell
+docker compose up --build
+```
 
-Responsável por receber as requisições HTTP e disponibilizar os endpoints da API.
+The API is available at `http://localhost:8080`; PostgreSQL is published on port `5432`. Compose waits for the database health check before starting the API. Data is stored in the `postgres-data` Docker volume.
 
-Service
+The Compose file currently configures PostgreSQL with database `owl`, user `postgres`, and password `postgres123`. Change these values before using the setup beyond local development, and keep the database and administrator credentials private.
 
-Responsável pela lógica da aplicação e aplicação das regras de negócio.
+Stop the services with `docker compose down`. The database volume remains so data is available the next time you start the stack. To remove the volume and its data, use `docker compose down --volumes`.
 
-Repository
+## Run without Docker
 
-Responsável pelo acesso e persistência dos dados utilizando Spring Data JPA.
+Requirements: Java 21+, PostgreSQL, and either Maven or the included Maven Wrapper.
 
-PostgreSQL
+1. Create a PostgreSQL database and user, then set the following environment variables for the application:
 
-Responsável pelo armazenamento persistente dos dados.
+   ```text
+   DB_URL=jdbc:postgresql://localhost:5432/owl
+   DB_USER=postgres
+   DB_PASSWORD=your-database-password
+   APP_ADMIN_LOGIN=admin
+   ADMIN_PASSWORD=change-this-password
+   JWT_SECRET=replace-with-a-long-random-secret
+   ```
 
-📦 Modelo de domínio
+   `JWT_SECRET` is optional in the current configuration, but should be set to a private random value. The application uses the configured administrator credentials to create an admin account when it starts.
 
-As principais entidades do sistema são:
+2. Start the application from the project root:
 
-Aluno
-  │
-  │
-Emprestimo
-  │
-  │
-Livro
+   ```shell
+   ./mvnw spring-boot:run
+   ```
 
-Livro
+   On Windows, use `mvnw.cmd spring-boot:run`, or run `mvn spring-boot:run` if Maven is installed.
 
-Representa um livro disponível no acervo da biblioteca.
+The API listens on port `8080`. Hibernate is configured with `ddl-auto=update`, so it creates or updates database tables at startup.
 
-Entre suas informações estão título, autor, ISBN, editora, ano de publicação, categoria e disponibilidade.
+## Authentication and first use
 
-Aluno
+The configured admin account is created when the application starts if one does not already exist. Use its credentials to get a token:
 
-Representa o aluno cadastrado no sistema e apto a realizar empréstimos.
+```http
+POST /auth/login
+Content-Type: application/json
 
-Empréstimo
+{
+  "login": "admin",
+  "password": "change-this-password"
+}
+```
 
-Representa a relação entre um aluno e um livro durante determinado período.
+The response contains a JWT. Send it on protected requests as `Authorization: Bearer <token>`. The admin can register a student record through `POST /students`, then create a student login linked to that record through `POST /auth/register`:
 
-Armazena informações referentes à realização do empréstimo, previsão de devolução e seu status.
-
-Para executar o projeto localmente é necessário possuir:
-
-Java 21+
-Maven
-PostgreSQL
-1. Clone o repositório
-git clone <URL-DO-REPOSITORIO>
-
-Entre na pasta:
-
-cd Owl
-2. Configure o PostgreSQL
-
-Configure as credenciais do banco no arquivo:
-
-src/main/resources/application.properties
-
-Exemplo:
-
-spring.datasource.url=jdbc:postgresql://localhost:5432/owl
-spring.datasource.username=postgres
-spring.datasource.password=SUA_SENHA
-
-O Hibernate é responsável pela criação/atualização das estruturas necessárias no banco durante a execução da aplicação, conforme a configuração do projeto.
-
-3. Execute
-mvn spring-boot:run
-
-Por padrão, a aplicação será iniciada na porta:
-
-8080
-🔗 API
-
-A aplicação disponibiliza endpoints REST para gerenciamento de:
-
-Livros
-
-Operações de cadastro, consulta, atualização e exclusão de livros.
-
-Alunos
-
-Operações de cadastro, consulta, atualização e exclusão de alunos.
-
-Empréstimos
-
-Operações relacionadas à realização, consulta e devolução de empréstimos.
-
-🧪 Testes
-
-O projeto possui testes automatizados para validar o comportamento da camada de serviços e suas principais regras de negócio.
-
-Os testes foram desenvolvidos utilizando:
-
-JUnit 5
-Mockito
-
-São verificados tanto cenários de execução esperada quanto comportamentos relacionados às regras de negócio e tratamento de operações inválidas.
-
-Para executar os testes:
-
-mvn test
-🗺️ Roadmap
-
-O desenvolvimento inicial foi concentrado na construção e validação do MVP.
-
-Possíveis evoluções incluem:
-
-Infraestrutura
-
-Containerização com Docker
-
-Docker Compose para aplicação e PostgreSQL
-
-Pipeline de CI/CD
-
-API e documentação
-
-Swagger / OpenAPI
-
-Documentação detalhada dos endpoints
-
-Tratamento global e padronizado de exceções
-
-Segurança
-
-Spring Security
-
-Autenticação com JWT
-
-Controle de acesso e permissões
-
-Domínio
-
-Reserva de livros
-
-Histórico avançado de empréstimos
-
-Controle de atrasos
-
-Sistema de multas
-
-Notificações de devolução
-
-Arquitetura
-
-Avaliação da evolução do monólito conforme o crescimento da aplicação
-
-Separação de serviços quando houver necessidade arquitetural
-
-📌 Status
-
-MVP concluído.
-
-O núcleo funcional da aplicação — gerenciamento de livros, alunos e empréstimos — encontra-se implementado e testado.
-
-As funcionalidades apresentadas no Roadmap representam possíveis evoluções posteriores e não fazem parte do escopo do MVP atual.
+```http
+POST /auth/register
+Authorization: Bearer <admin-token>
+Content-Type: application/json
+
+{
+  "login": "student1",
+  "password": "student-password",
+  "role": "STUDENT",
+  "registrationNumber": "2024001"
+}
+```
+
+Student accounts can sign in and use `GET /loans/me` to see their own loans. Book, student, and general loan management endpoints require an admin token.
+
+## API endpoints
+
+All endpoints are relative to `http://localhost:8080`. Except for login and the public documentation, requests require a bearer token with an authorized role.
+
+| Method | Path | Description | Access |
+| --- | --- | --- | --- |
+| `POST` | `/auth/login` | Authenticate and receive a JWT | Public |
+| `POST` | `/auth/register` | Create a student account linked to an existing student | Admin |
+| `POST` | `/books` | Register a book | Admin |
+| `GET` | `/books` | List books | Admin |
+| `GET` | `/books/isbn/{isbn}` | Find a book by ISBN | Admin |
+| `GET` | `/books/title/{title}` | Find books by title | Admin |
+| `PUT` | `/books/{isbn}` | Update a book | Admin |
+| `DELETE` | `/books/{isbn}` | Delete a book | Admin |
+| `POST` | `/students` | Register a student | Admin |
+| `GET` | `/students` | List students | Admin |
+| `GET` | `/students/name/{name}` | Find students by name | Admin |
+| `GET` | `/students/registration-number/{registrationNumber}` | Find a student by registration number | Admin |
+| `PUT` | `/students/{registrationNumber}` | Update a student | Admin |
+| `DELETE` | `/students/{registrationNumber}` | Delete a student | Admin |
+| `POST` | `/loans?studentRegistrationNumber={number}&bookIsbn={isbn}` | Create a loan | Admin |
+| `GET` | `/loans` | List all loans | Admin |
+| `GET` | `/loans/registration-number/{registrationNumber}` | Find a student's loans | Admin |
+| `GET` | `/loans/status/{status}` | Find loans by status (`ACTIVE` or `RETURNED`) | Admin |
+| `PUT` | `/loans/{registrationNumber}/return` | Return the student's active loan | Admin |
+| `GET` | `/loans/me` | List the authenticated student's loans | Student |
+
+The book and student create/update endpoints accept JSON request bodies. See Swagger UI for the request and response schemas.
+
+## API documentation
+
+With the application running, open [Swagger UI](http://localhost:8080/swagger-ui/index.html). The OpenAPI document is available at `http://localhost:8080/v3/api-docs`.
+
+## Tests
+
+Run the automated suite with the Maven Wrapper:
+
+```shell
+./mvnw test
+```
+
+On Windows, run `mvnw.cmd test`. The suite includes service and controller tests for core behavior, business rules, and access control.
+
+## Project structure
+
+- **Controllers** map HTTP requests to application operations.
+- **Services** apply business rules and coordinate workflows.
+- **Repositories** access PostgreSQL through Spring Data JPA.
+- **Entities** represent books, students, loans, and user accounts.
+- **DTOs** define the API's request and response data.
+
+## Project status
+
+The MVP includes book, student, and loan management, JWT authentication, role-based access, Docker Compose, and generated API documentation. Possible future work includes CI/CD improvements, reservations, overdue tracking, fines, and return notifications.

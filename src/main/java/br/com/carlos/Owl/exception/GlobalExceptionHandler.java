@@ -5,96 +5,91 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import br.com.carlos.Owl.exception.Alunos.AlunoComEmprestimoException;
-import br.com.carlos.Owl.exception.Alunos.AlunoNaoEncontradoException;
-import br.com.carlos.Owl.exception.Alunos.RaJaCadastradoException;
-import br.com.carlos.Owl.exception.Emprestimos.EmprestimoDevolvidoException;
-import br.com.carlos.Owl.exception.Emprestimos.EmprestimoEmAndamentoException;
-import br.com.carlos.Owl.exception.Emprestimos.EmprestimoNaoEncontradoException;
-import br.com.carlos.Owl.exception.Livros.IsbnJaCadastradoException;
-import br.com.carlos.Owl.exception.Livros.LivroIndisponivelException;
-import br.com.carlos.Owl.exception.Livros.LivroNaoEncontradoException;
+import br.com.carlos.Owl.exception.Books.BookHasActiveLoanException;
+import br.com.carlos.Owl.exception.Books.BookNotFoundException;
+import br.com.carlos.Owl.exception.Books.BookUnavailableException;
+import br.com.carlos.Owl.exception.Books.IsbnAlreadyRegisteredException;
+import br.com.carlos.Owl.exception.Loans.LoanAlreadyActiveException;
+import br.com.carlos.Owl.exception.Loans.LoanAlreadyReturnedException;
+import br.com.carlos.Owl.exception.Loans.LoanNotFoundException;
+import br.com.carlos.Owl.exception.Students.RegistrationNumberAlreadyExistsException;
+import br.com.carlos.Owl.exception.Students.StudentHasActiveLoanException;
+import br.com.carlos.Owl.exception.Students.StudentNotFoundException;
 
 /**
- * Centraliza o tratamento das exceções da aplicação,
- * retornando respostas HTTP adequadas para cada situação.
+ * Centralizes application exception handling and returns appropriate HTTP responses.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     // =========================
-    // Alunos
+    // Students
     // =========================
 
-    @ExceptionHandler(AlunoNaoEncontradoException.class)
-    public ResponseEntity<String> tratarAlunoNaoEncontrado(AlunoNaoEncontradoException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ex.getMessage());
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ResponseEntity<String> handleStudentNotFound(StudentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-    @ExceptionHandler(RaJaCadastradoException.class)
-    public ResponseEntity<String> tratarRaJaCadastrado(RaJaCadastradoException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ex.getMessage());
+    @ExceptionHandler(RegistrationNumberAlreadyExistsException.class)
+    public ResponseEntity<String> handleRegisterNumberAlreadyExists(RegistrationNumberAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
-    @ExceptionHandler(AlunoComEmprestimoException.class)
-    public ResponseEntity<String> tratarAlunoComEmprestimo(AlunoComEmprestimoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+    @ExceptionHandler(StudentHasActiveLoanException.class)
+    public ResponseEntity<String> handleStudentHasActiveLoan(StudentHasActiveLoanException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     // =========================
-    // Livros
+    // Books
     // =========================
 
-    @ExceptionHandler(LivroNaoEncontradoException.class)
-    public ResponseEntity<String> tratarLivroNaoEncontrado(LivroNaoEncontradoException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ex.getMessage());
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<String> handleBookNotFound(BookNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-    @ExceptionHandler(IsbnJaCadastradoException.class)
-    public ResponseEntity<String> tratarIsbnJaCadastrado(IsbnJaCadastradoException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ex.getMessage());
+    @ExceptionHandler(IsbnAlreadyRegisteredException.class)
+    public ResponseEntity<String> handleIsbnAlreadyregistered(IsbnAlreadyRegisteredException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
-    @ExceptionHandler(LivroIndisponivelException.class)
-    public ResponseEntity<String> tratarLivroIndisponivel(LivroIndisponivelException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+    @ExceptionHandler(BookUnavailableException.class)
+    public ResponseEntity<String> handleBookUnvailable(BookUnavailableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    // =========================
-    // Empréstimos
-    // =========================
-
-    @ExceptionHandler(EmprestimoNaoEncontradoException.class)
-    public ResponseEntity<String> tratarEmprestimoNaoEncontrado(EmprestimoNaoEncontradoException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(EmprestimoEmAndamentoException.class)
-    public ResponseEntity<String> tratarEmprestimoEmAndamento(EmprestimoEmAndamentoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(EmprestimoDevolvidoException.class)
-    public ResponseEntity<String> tratarEmprestimoDevolvido(EmprestimoDevolvidoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+    @ExceptionHandler(BookHasActiveLoanException.class)
+    public ResponseEntity<String> handleBookHasActiveLoan(BookHasActiveLoanException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     // =========================
-    // Genérico
+    // Loans
     // =========================
-    
+
+    @ExceptionHandler(LoanNotFoundException.class)
+    public ResponseEntity<String> handleLoanNotFound(LoanNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(LoanAlreadyActiveException.class)
+    public ResponseEntity<String> handleLoanAlreadyActive(LoanAlreadyActiveException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(LoanAlreadyReturnedException.class)
+    public ResponseEntity<String> handleLoanAlredyReturned(LoanAlreadyReturnedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    // =========================
+    // Generic
+    // =========================
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> tratarErroGenerico(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("Ocorreu um erro interno no servidor.");
-}
+    public ResponseEntity<String> handleGenericError(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal server error occurred.");
+    }
 }

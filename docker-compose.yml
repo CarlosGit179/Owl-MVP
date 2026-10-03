@@ -1,4 +1,5 @@
 services:
+
   postgres:
     image: postgres:16
     environment:
@@ -9,17 +10,26 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d owl"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   owl-api:
     build: .
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/owl
       DB_USER: postgres
       DB_PASSWORD: postgres123
+
+      APP_ADMIN_LOGIN: ${APP_ADMIN_LOGIN}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
 
 volumes:
   postgres-data:
