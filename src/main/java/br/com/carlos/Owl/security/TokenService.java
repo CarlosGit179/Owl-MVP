@@ -14,12 +14,20 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import br.com.carlos.Owl.entity.User;
 
+/** Creates and validates signed JSON Web Tokens used for stateless authentication. */
 @Service
 public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String secret;
 
+    /**
+     * Creates a signed token whose subject is the user's login and whose issuer is Owl Api.
+     *
+     * @param user authenticated user to encode in the token
+     * @return the signed token
+     * @throws RuntimeException if token creation fails
+     */
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -31,6 +39,12 @@ public class TokenService {
         }
     }
 
+    /**
+     * Verifies the token signature, issuer, and expiration.
+     *
+     * @param token token to validate
+     * @return the login encoded as the token subject, or an empty string if invalid
+     */
     public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -42,6 +56,11 @@ public class TokenService {
         }
     }
 
+    /**
+     * Calculates the token expiration time two hours from the current time.
+     *
+     * @return token expiration instant
+     */
     public Instant genExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }

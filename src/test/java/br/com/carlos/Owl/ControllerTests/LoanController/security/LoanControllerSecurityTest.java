@@ -1,6 +1,5 @@
-package br.com.carlos.Owl.controllerTests.StudentController.security;
+package br.com.carlos.Owl.controllerTests.LoanController.security;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -10,30 +9,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import br.com.carlos.Owl.controller.StudentController;
-import br.com.carlos.Owl.dto.infra.request.StudentRequest;
+import br.com.carlos.Owl.controller.LoanController;
 import br.com.carlos.Owl.entity.User;
 import br.com.carlos.Owl.enums.UserRole;
 import br.com.carlos.Owl.repository.UserRepository;
 import br.com.carlos.Owl.security.TokenService;
 import br.com.carlos.Owl.service.LoanService;
-import br.com.carlos.Owl.service.StudentService;
 
-@WebMvcTest(StudentController.class)
-public class StudentControllerSecurityTest {
+@WebMvcTest(LoanController.class)
+public class LoanControllerSecurityTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockitoBean
-    private StudentService studentService;
 
     @MockitoBean
     private LoanService loanService;
@@ -47,22 +40,17 @@ public class StudentControllerSecurityTest {
     @MockitoBean
     private AuthenticationManager authenticationManager;
 
-    @Test
-    void studentCannotAccessStudentFeatures() throws Exception {
+    @Test 
+    void studentCannotAccessLoanFeatures() throws Exception {
 
         User user = new User("Carlos", "123", UserRole.STUDENT, null);
 
         Authentication authentication = new TestingAuthenticationToken(user, null, user.getAuthorities());
 
-        mockMvc.perform(post("/students").with(authentication(authentication)).contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                            "name": "Carlos",
-                            "registrationNumber": "123"
-                        }
-                        """)).andExpect(status().isForbidden());
+        mockMvc.perform(post("/loans").with(authentication(authentication)).param("studentRegistrationNumber", "123456").param("bookIsbn", "9780132350884"))
+        .andExpect(status().isForbidden());
 
-        verify(studentService, never()).register(any(StudentRequest.class));
+        verify(loanService, never()).createLoan("123456", "9780132350884");
     }
 
 }

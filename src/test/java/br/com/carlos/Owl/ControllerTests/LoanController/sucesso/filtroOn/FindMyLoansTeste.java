@@ -1,4 +1,4 @@
-package br.com.carlos.Owl.ControllerTests.LoanController.sucesso.filtroOn;
+package br.com.carlos.Owl.controllerTests.LoanController.sucesso.filtroOn;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

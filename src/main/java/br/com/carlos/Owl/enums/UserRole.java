@@ -1,5 +1,6 @@
 package br.com.carlos.Owl.enums;
 
+/** Roles assigned to accounts and used to authorize protected endpoints. */
 public enum UserRole {
 
     ADMIN("admin"), STUDENT("student");

@@ -1,4 +1,4 @@
-package br.com.carlos.Owl.ControllerTests.AuthController.filterOff;
+package br.com.carlos.Owl.controllerTests.AuthController.filterOff;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;

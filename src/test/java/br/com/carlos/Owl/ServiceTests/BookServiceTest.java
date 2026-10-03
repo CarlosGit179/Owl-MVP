@@ -1,4 +1,4 @@
-package br.com.carlos.Owl.ServiceTests;
+package br.com.carlos.Owl.serviceTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

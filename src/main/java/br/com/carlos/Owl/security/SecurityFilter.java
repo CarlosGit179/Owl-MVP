@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/** Authenticates requests that provide a valid bearer token. */
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
@@ -24,6 +25,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     UserRepository userRepository;
 
+    /** Resolves the bearer token and populates the security context before dispatching the request. */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
@@ -39,6 +41,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Extracts the token value from the Authorization header.
+     *
+     * @param request current HTTP request
+     * @return the bearer token, or {@code null} when the header is absent
+     */
     private String recoverToken(HttpServletRequest request) {
         var AuthHeader = request.getHeader("Authorization");
         if (AuthHeader == null)

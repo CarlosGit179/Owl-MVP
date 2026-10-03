@@ -1,4 +1,4 @@
-package br.com.carlos.Owl.ControllerTests.StudentController;
+package br.com.carlos.Owl.controllerTests.StudentController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

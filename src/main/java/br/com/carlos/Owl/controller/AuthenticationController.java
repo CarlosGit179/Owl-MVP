@@ -20,9 +20,12 @@ import br.com.carlos.Owl.repository.StudentRepository;
 import br.com.carlos.Owl.repository.UserRepository;
 import br.com.carlos.Owl.security.TokenService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
 public class AuthenticationController {
 
     @Autowired
@@ -38,6 +41,7 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
+    @Operation(summary = "Log in", description = "Authenticates a user and returns a signed JWT. Send it as a Bearer token to access protected endpoints.")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
@@ -50,6 +54,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a student account", description = "Creates an account linked to an existing student record; only administrators can register accounts")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
 
         if (data.role() != UserRole.STUDENT) {

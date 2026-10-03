@@ -23,6 +23,7 @@ import br.com.carlos.Owl.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+/** Applies business rules for creating, returning, and querying book loans. */
 @Service
 @RequiredArgsConstructor
 @Transactional

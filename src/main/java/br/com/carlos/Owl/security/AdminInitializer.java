@@ -10,6 +10,7 @@ import br.com.carlos.Owl.entity.User;
 import br.com.carlos.Owl.enums.UserRole;
 import br.com.carlos.Owl.repository.UserRepository;
 
+/** Creates the configured administrator account when the application starts, if it is missing. */
 @Configuration
 public class AdminInitializer {
 
@@ -19,6 +20,13 @@ public class AdminInitializer {
     @Value("${app.admin.password}")
     private String adminPassword;
 
+    /**
+     * Registers a startup task that ensures the configured administrator exists.
+     *
+     * @param userRepository repository used to check and persist the account
+     * @param passwordEncoder encoder used to hash the configured password
+     * @return startup task for administrator initialization
+     */
     @Bean
     CommandLineRunner initAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
